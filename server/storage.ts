@@ -1,38 +1,73 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import {
+  models, metrics, healingActions,
+  type Model, type Metric, type HealingAction,
+  type InsertModel, type InsertMetric, type InsertHealingAction,
+  type UpdateModelRequest
+} from "@shared/schema";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getModels(): Promise<Model[]>;
+  getModel(id: number): Promise<Model | undefined>;
+  createModel(model: InsertModel): Promise<Model>;
+  updateModel(id: number, updates: UpdateModelRequest): Promise<Model>;
+  
+  getMetrics(modelId: number, limit?: number): Promise<Metric[]>;
+  createMetric(metric: InsertMetric): Promise<Metric>;
+  
+  getHealingActions(limit?: number): Promise<HealingAction[]>;
+  createHealingAction(action: InsertHealingAction): Promise<HealingAction>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getModels(): Promise<Model[]> {
+    return await db.select().from(models).orderBy(models.id);
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getModel(id: number): Promise<Model | undefined> {
+    const [model] = await db.select().from(models).where(eq(models.id, id));
+    return model;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async createModel(model: InsertModel): Promise<Model> {
+    const [newModel] = await db.insert(models).values(model).returning();
+    return newModel;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async updateModel(id: number, updates: UpdateModelRequest): Promise<Model> {
+    const [updated] = await db.update(models)
+      .set({ ...updates, lastUpdated: new Date() })
+      .where(eq(models.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getMetrics(modelId: number, limit: number = 30): Promise<Metric[]> {
+    const data = await db.select()
+      .from(metrics)
+      .where(eq(metrics.modelId, modelId))
+      .orderBy(desc(metrics.timestamp))
+      .limit(limit);
+    return data.reverse(); // Return in chronological order for charts
+  }
+
+  async createMetric(metric: InsertMetric): Promise<Metric> {
+    const [newMetric] = await db.insert(metrics).values(metric).returning();
+    return newMetric;
+  }
+
+  async getHealingActions(limit: number = 20): Promise<HealingAction[]> {
+    return await db.select()
+      .from(healingActions)
+      .orderBy(desc(healingActions.timestamp))
+      .limit(limit);
+  }
+
+  async createHealingAction(action: InsertHealingAction): Promise<HealingAction> {
+    const [newAction] = await db.insert(healingActions).values(action).returning();
+    return newAction;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
