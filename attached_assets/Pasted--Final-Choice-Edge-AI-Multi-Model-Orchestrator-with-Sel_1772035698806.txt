@@ -1,0 +1,209 @@
+🏆 Final Choice
+Edge AI Multi-Model Orchestrator with Self-Healing & Priority Scheduling
+Why This Is The Smartest Move
+🚫 Not repetitive
+
+Past winners were:
+
+Robots
+
+Drones
+
+Object detection systems
+
+Media generation tools
+
+Very few (almost none) built:
+
+A control plane that intelligently manages multiple AI workloads on edge devices.
+
+This feels infrastructure-level and enterprise-grade.
+
+🔥 Extremely AMD-Aligned
+
+This directly connects to:
+
+Multi-model inference on Ryzen AI
+
+Edge AI deployment
+
+NPU resource management
+
+Hybrid AI workloads
+
+ROCm / model acceleration story
+
+You’re not just “using AI”.
+
+You’re solving:
+
+How to manage AI efficiently on AMD edge hardware.
+
+That sounds senior-level.
+
+💪 Perfect Match With Your Strength
+
+You already built:
+
+Self-healing monitor
+
+Auto recovery systems
+
+Backend-heavy logic
+
+Real-time dashboards
+
+This is basically:
+Self-healing — but for AI models.
+
+🎯 Project Name (Strong Version)
+
+RyzenGuard: Edge AI Workload Orchestrator for AMD Devices
+
+Short pitch:
+
+RyzenGuard intelligently monitors, prioritizes, and auto-heals multiple AI workloads running on AMD Ryzen AI edge devices, ensuring optimal performance and reliability.
+
+Clean. Professional. AMD-ready.
+
+🏗️ What We Will Build (5-Day Scope)
+Core Idea
+
+Simulate an AMD edge device running:
+
+Object Detection Model
+
+Speech Recognition Model
+
+Anomaly Detection Model
+
+Each has:
+
+Latency
+
+Memory usage
+
+NPU load
+
+Status (Running / Overloaded / Crashed)
+
+System will:
+
+Detect overload
+
+Auto-restart models
+
+Pause low-priority models
+
+Rebalance workloads
+
+Log healing actions
+
+🧱 Architecture (Software Only)
+
+Frontend (React Native or Web Dashboard)
+↓
+Backend (Django + REST)
+↓
+Scheduler (Celery)
+↓
+Simulated AI Models + Metrics Engine
+↓
+Auto-Healing Rule Engine
+
+🗓️ 5-Day Execution Plan
+Day 1 – Backend Core
+
+Setup Django project
+
+Create models:
+
+Device
+
+AIModel
+
+ModelMetric
+
+HealingAction
+
+Create basic CRUD APIs
+
+Day 2 – Metrics Simulation Engine
+
+Celery task every 5 seconds
+
+Simulate:
+
+Latency spikes
+
+Memory growth
+
+Random crashes
+
+Store metrics in DB
+
+Day 3 – Auto-Healing Logic
+
+Rules like:
+
+IF:
+
+latency > 500ms
+
+OR memory > 85%
+
+OR model crashed
+
+THEN:
+
+Restart model
+
+Reduce priority of non-critical model
+
+Log action
+
+Day 4 – Frontend Dashboard
+
+Show:
+
+Card per model
+
+Status (Green/Yellow/Red)
+
+Real-time metrics (polling)
+
+Healing timeline
+
+Day 5 – Polish + AMD Framing
+
+Add:
+
+“Edge Mode”
+
+Priority toggle
+
+Device health score
+
+Demo script
+
+Architecture slide
+
+🧠 Why This Will Impress AMD Judges
+
+You’ll say:
+
+As AI workloads increase on edge devices, efficient resource orchestration becomes critical. RyzenGuard provides a Kubernetes-style auto-healing and priority scheduling layer specifically designed for AMD Ryzen AI platforms.
+
+That sounds like something AMD would actually productize.
+
+🧩 Now Important Decision
+
+Backend:
+
+👉 Django (faster for rapid build)
+OR
+👉 Spring Boot (more enterprise-feel, your strength)
+
+For 5-day hackathon:
+
+I recommend Django + Celery for speed.
