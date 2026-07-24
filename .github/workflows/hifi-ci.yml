@@ -1,0 +1,38 @@
+name: HiFi CI — amd
+'on':
+  push:
+    branches:
+    - '**'
+  pull_request:
+    branches:
+    - merawala
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: npm
+    - name: Install dependencies
+      run: npm ci
+    - name: Lint
+      run: npm run lint
+    - name: Build
+      run: npm run build
+    - name: Build Docker image
+      run: docker build -t amd .
+    - name: Deploy
+      if: github.ref == 'refs/heads/merawala'
+      env:
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      run: echo 'Add your deploy command here'
+    - name: Capture failure and notify HiFi
+      if: failure()
+      run: "tail -n 200 $GITHUB_WORKSPACE/test-output.log > fail-log.txt || true\n\
+        curl -X POST \"${{ secrets.HIFI_API_URL }}/api/receive-failure\" \\\n  -H\
+        \ \"Content-Type: application/json\" \\\n  -H \"X-Hifi-Key: ${{ secrets.HIFI_API_KEY\
+        \ }}\" \\\n  -d \"{\\\"repo\\\":\\\"$GITHUB_REPOSITORY\\\",\\\"branch\\\"\
+        :\\\"$GITHUB_REF_NAME\\\",\\\"commit\\\":\\\"$GITHUB_SHA\\\"}\""
