@@ -2,7 +2,7 @@ name: HiFi CI — amd
 'on':
   push:
     branches:
-    - '**'
+    - merawala
   pull_request:
     branches:
     - merawala
@@ -29,10 +29,3 @@ jobs:
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: echo 'Add your deploy command here'
-    - name: Capture failure and notify HiFi
-      if: failure()
-      run: "tail -n 200 $GITHUB_WORKSPACE/test-output.log > fail-log.txt || true\n\
-        curl -X POST \"${{ secrets.HIFI_API_URL }}/api/receive-failure\" \\\n  -H\
-        \ \"Content-Type: application/json\" \\\n  -H \"X-Hifi-Key: ${{ secrets.HIFI_API_KEY\
-        \ }}\" \\\n  -d \"{\\\"repo\\\":\\\"$GITHUB_REPOSITORY\\\",\\\"branch\\\"\
-        :\\\"$GITHUB_REF_NAME\\\",\\\"commit\\\":\\\"$GITHUB_SHA\\\"}\""
